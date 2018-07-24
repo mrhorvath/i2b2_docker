@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+        i2b2_app:
+                build:
+                        context: .
+                        args:
+                                - I2B2_VERSION
+                image: i2b2_app:${I2B2_VERSION}
+                networks:
+                        - i2b2_test
+
+networks:
+        i2b2_test:
