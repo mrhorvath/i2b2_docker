@@ -7,8 +7,12 @@ services:
                         args:
                                 - I2B2_VERSION
                 image: i2b2_app:${I2B2_VERSION}
+                ports:
+                        - 8080:8080
+                        - 9990:9990
                 networks:
-                        - i2b2_test
+                        - i2b2db_docker_i2b2_test
 
 networks:
-        i2b2_test:
+        i2b2db_docker_i2b2_test:
+                external: true
