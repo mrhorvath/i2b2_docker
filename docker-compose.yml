@@ -12,6 +12,8 @@ services:
                         - 9990:9990
                 networks:
                         - i2b2db_docker_i2b2_test
+                env_file:
+                        - .env
 
 networks:
         i2b2db_docker_i2b2_test:

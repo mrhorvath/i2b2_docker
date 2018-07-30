@@ -31,10 +31,20 @@ RUN $BUILD_HOME/ant/bin/ant -buildfile $BUILD_HOME/edu.harvard.i2b2.workplace/ma
 RUN $BUILD_HOME/ant/bin/ant -buildfile $BUILD_HOME/edu.harvard.i2b2.fr/master_build.xml clean build-all deploy
 RUN $BUILD_HOME/ant/bin/ant -buildfile $BUILD_HOME/edu.harvard.i2b2.im/master_build.xml clean build-all deploy
 
+#ADD datasources /opt/jboss/wildfly/standalone/deployments
+ADD modules /opt/jboss/wildfly/modules/
+RUN cp $WILDFLY_HOME/standalone/deployments/*.jar $WILDFLY_HOME/
+
 FROM jboss/wildfly
 
 COPY --from=builder /opt/jboss/wildfly/standalone/deployments /opt/jboss/wildfly/standalone/deployments/
 COPY --from=builder /opt/jboss/wildfly/standalone/configuration /opt/jboss/wildfly/standalone/configuration/
+COPY --from=builder /opt/jboss/wildfly/modules /opt/jboss/wildfly/modules
 # COPY ./ds /opt/jboss/wildfly/standalone/deployments/
-RUN /opt/jboss/wildfly/bin/add-user.sh admin Admin#70365 --silent
+#RUN /opt/jboss/wildfly/bin/add-user.sh admin Admin#70365 --silent
+#CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+COPY docker-entrypoint.sh /usr/local/bin/
+COPY  docker-entrypoint-init.d /docker-entrypoint-init.d
+#COPY docker-entrypoint-init.d/ /
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
